@@ -1,0 +1,20 @@
+@model SuperNoughtsAndCrosses.models.IGameState;
+
+<script type="text/javascript">
+    var playTile = function(row, col) {
+        $('#board').load(
+            '@Url.Action("PlayTile", $"Game", null)?column=' + col + '&row=' + row);
+    }
+</script>
+
+@for (var row = 0; row < Model.GetNumberOfRows(); row++)
+{
+    <div class="row row-@(row)">
+        @for (var col = 0; col < Model.GetNumberOfCols(); col++)
+        {
+            <button class="tile tile-@(col)" onclick="playTile(@(row), @(col))">
+                @Model.GetSymbolForTile(row, col)
+            </button>
+        }
+    </div>
+}

@@ -1,0 +1,13 @@
+.row {
+    display: flex;
+}
+
+.tile {
+    width: 4rem;
+    height: 4rem;
+    
+    margin: 0.25rem;
+    border-radius: 0.5rem;
+
+    font-size: 2rem;
+}

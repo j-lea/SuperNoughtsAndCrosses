@@ -1,0 +1,17 @@
+@model SuperNoughtsAndCrosses.models.IGameState
+
+@{
+    ViewBag.Title = "Super Noughts and Crosses";
+}
+
+<head>
+    <title>Super Noughts and Crosses</title>
+    <link rel="stylesheet" href="~/game.css" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+
+<h2>Super Noughts and Crosses</h2>
+
+<div id="board">
+    @{Html.RenderPartial("Board", Model);}
+</div>
