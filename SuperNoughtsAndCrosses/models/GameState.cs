@@ -1,51 +1,53 @@
-using static SuperNoughtsAndCrosses.models.PlayerSymbol;
+using System.Linq;
+using static System.Linq.Enumerable;
+using static SuperNoughtsAndCrosses.models.Player;
 
 namespace SuperNoughtsAndCrosses.models
 {
     public class GameState : IGameState
     {
-        private PlayerSymbol _currentPlayerSymbol;
-        private readonly PlayerSymbol[][] _board;
+        private Player _currentPlayer;
+        private readonly Player[][] _board;
 
         private int _tilesPlayed;
         private bool _isGameOver;
-        private GameVictor _victor;
+        private Player _winner;
 
         public GameState()
         {
-            _currentPlayerSymbol = CROSS;
+            _currentPlayer = CROSS;
             
             _board = new[]
             {
-                new[] {UNPLAYED, UNPLAYED, UNPLAYED},
-                new[] {UNPLAYED, UNPLAYED, UNPLAYED},
-                new[] {UNPLAYED, UNPLAYED, UNPLAYED}
+                new[] {NONE, NONE, NONE},
+                new[] {NONE, NONE, NONE},
+                new[] {NONE, NONE, NONE}
             };
 
             _tilesPlayed = 0;
             _isGameOver = false;
-            _victor = GameVictor.TIE;
+            _winner = NONE;
         }
 
         private void ChangeTurn()
         {
-            _currentPlayerSymbol = _currentPlayerSymbol == CROSS ? NOUGHT : CROSS;
+            _currentPlayer = _currentPlayer == CROSS ? NOUGHT : CROSS;
         }
 
         public void PlayTile(int row, int col)
         {
-            if (!_board[row][col].Equals(UNPLAYED))
+            if (!_board[row][col].Equals(NONE))
             {
                 throw new InvalidMoveException();
             }
             
-            _board[row][col] = _currentPlayerSymbol;
+            _board[row][col] = _currentPlayer;
             _tilesPlayed++;
             
             if (CheckForWin(row, col))
             {
                 _isGameOver = true;
-                _victor = _currentPlayerSymbol == CROSS ? GameVictor.PLAYER_X : GameVictor.PLAYER_O;
+                _winner = _currentPlayer;
             }
 
             if (_tilesPlayed == GetNumberOfCols() * GetNumberOfRows())
@@ -58,22 +60,22 @@ namespace SuperNoughtsAndCrosses.models
 
         private bool CheckForWinOnRow(int row)
         {
-            return _board[row].All(tile => tile.Equals(_currentPlayerSymbol));
+            return _board[row].All(tile => tile.Equals(_currentPlayer));
         }
         
         private bool CheckForWinOnCol(int col)
         {
-            return _board.All(r => r[col].Equals(_currentPlayerSymbol));
+            return _board.All(r => r[col].Equals(_currentPlayer));
         }
 
         private bool CheckForWinDiagonallyDown()
         {
-            return Range(0, GetNumberOfRows()).All(i => _board[i][i].Equals(_currentPlayerSymbol));
+            return Range(0, GetNumberOfRows()).All(i => _board[i][i].Equals(_currentPlayer));
         }
 
         private bool CheckForWinDiagonallyUp()
         {
-            return Range(0, GetNumberOfRows()).All(i => _board[i][2-i].Equals(_currentPlayerSymbol));
+            return Range(0, GetNumberOfRows()).All(i => _board[i][2-i].Equals(_currentPlayer));
         }
 
         private bool CheckForWin(int row, int col)
@@ -94,9 +96,9 @@ namespace SuperNoughtsAndCrosses.models
             return _board[0].Length;
         }
 
-        private string Display(PlayerSymbol symbol)
+        private string Display(Player player)
         {
-            switch (symbol)
+            switch (player)
             {
                 case NOUGHT:
                     return "O";
@@ -112,14 +114,14 @@ namespace SuperNoughtsAndCrosses.models
             return Display(_board[row][col]);
         }
 
+        public Player GetWinner()
+        {
+            return _winner;
+        }
+
         public bool IsGameOver()
         {
             return _isGameOver;
-        }
-
-        public GameVictor GetWinner()
-        {
-            return _victor;
         }
     }
 }

@@ -13,20 +13,13 @@ namespace SuperNoughtsAndCrosses.models
         string GetSymbolForTile(int row, int col);
     }
 
-    public enum PlayerSymbol
+    public enum Player
     {
-        UNPLAYED,
+        NONE,
         CROSS,
         NOUGHT
     }
-    
-    public enum GameVictor
-    {
-        PLAYER_X,
-        PLAYER_O,
-        TIE
-    }
-
+  
     public class InvalidMoveException : Exception
     {
         
