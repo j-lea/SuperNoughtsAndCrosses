@@ -42,6 +42,11 @@ namespace SuperNoughtsAndCrosses.Test
             PlayInPosition(1, 1, "X");
             PlayInPosition(0, 2, "O");
             PlayInPosition(1, 2, "X");
+            
+            // Play in position again and nothing happens
+            PlayInPosition(1, 2, "X");
+           
+            PlayInPosition(0, 0, "O");
         }
       
 
@@ -54,7 +59,6 @@ namespace SuperNoughtsAndCrosses.Test
         private void PlayInPosition(int row, int col, string playerSymbol)
         {
             var tile = FindTileAtPosition(row, col);
-            Assert.Equal("", tile.Text);
             tile.Click();
 
             var wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(3));

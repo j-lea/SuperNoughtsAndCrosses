@@ -1,3 +1,5 @@
+using System;
+
 namespace SuperNoughtsAndCrosses.models
 {
     public interface IGameState
@@ -16,5 +18,17 @@ namespace SuperNoughtsAndCrosses.models
         UNPLAYED,
         CROSS,
         NOUGHT
+    }
+    
+    public enum GameVictor
+    {
+        PLAYER_X,
+        PLAYER_O,
+        TIE
+    }
+
+    public class InvalidMoveException : Exception
+    {
+        
     }
 }

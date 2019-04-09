@@ -20,7 +20,14 @@ namespace SuperNoughtsAndCrosses.Controllers
 
         public IActionResult PlayTile(int row, int column)
         {
-            _gameState.PlayTile(row, column);
+            try
+            {
+                _gameState.PlayTile(row, column);
+            }
+            catch (InvalidMoveException e)
+            {
+            }
+
             return PartialView("Board", _gameState);
         }
     }
