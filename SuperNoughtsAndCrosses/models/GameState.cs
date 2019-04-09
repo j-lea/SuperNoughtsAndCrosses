@@ -6,6 +6,8 @@ namespace SuperNoughtsAndCrosses.models
 {
     public class GameState : IGameState
     {
+        private const int Size = 3;
+        
         private Player _currentPlayer;
         private readonly Player[][] _board;
 
@@ -16,17 +18,16 @@ namespace SuperNoughtsAndCrosses.models
         public GameState()
         {
             _currentPlayer = CROSS;
-            
-            _board = new[]
-            {
-                new[] {NONE, NONE, NONE},
-                new[] {NONE, NONE, NONE},
-                new[] {NONE, NONE, NONE}
-            };
 
+            _board = GetBoardOfSize(); 
             _tilesPlayed = 0;
             _isGameOver = false;
             _winner = NONE;
+        }
+
+        private Player[][] GetBoardOfSize()
+        {
+            return Range(0, Size).Select(rows => Range(0, Size).Select(cols => NONE).ToArray()).ToArray();
         }
 
         private void ChangeTurn()
@@ -70,12 +71,13 @@ namespace SuperNoughtsAndCrosses.models
 
         private bool CheckForWinDiagonallyDown()
         {
-            return Range(0, GetNumberOfRows()).All(i => _board[i][i].Equals(_currentPlayer));
+            return Range(0, Size).All(i => _board[i][i].Equals(_currentPlayer));
         }
 
         private bool CheckForWinDiagonallyUp()
         {
-            return Range(0, GetNumberOfRows()).All(i => _board[i][2-i].Equals(_currentPlayer));
+            var maxTileIndex = Size - 1; 
+            return Range(0, GetNumberOfRows()).All(i => _board[i][maxTileIndex-i].Equals(_currentPlayer));
         }
 
         private bool CheckForWin(int row, int col)
@@ -96,7 +98,7 @@ namespace SuperNoughtsAndCrosses.models
             return _board[0].Length;
         }
 
-        private string Display(Player player)
+        public string Display(Player player)
         {
             switch (player)
             {

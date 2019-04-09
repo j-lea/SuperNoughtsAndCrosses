@@ -11,6 +11,12 @@ namespace SuperNoughtsAndCrosses.models
         int GetNumberOfCols();
 
         string GetSymbolForTile(int row, int col);
+
+        bool IsGameOver();
+
+        Player GetWinner();
+
+        string Display(Player player);
     }
 
     public enum Player

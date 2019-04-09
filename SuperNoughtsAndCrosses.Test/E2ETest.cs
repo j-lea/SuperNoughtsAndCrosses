@@ -31,7 +31,7 @@ namespace SuperNoughtsAndCrosses.Test
         }
 
         [Fact]
-        public void PlayBasicGame()
+        public void PlayBasicGameCrossesWin()
         {
             _webDriver.Url = _baseAddress + "/game";
             
@@ -47,6 +47,37 @@ namespace SuperNoughtsAndCrosses.Test
             PlayInPosition(1, 2, "X");
            
             PlayInPosition(0, 0, "O");
+            
+            // Winning move
+            var tile = FindTileAtPosition(1, 0);
+            tile.Click();
+
+            var wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(3));
+            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
+            wait.Until(d => _webDriver.FindElement(By.CssSelector("#board")).Text.Equals("X"));
+        }
+
+        [Fact]
+        public void PlayGameNoughtsWin()
+        {
+            _webDriver.Url = _baseAddress + "/game";
+            
+            var tiles = _webDriver.FindElementsByClassName("tile");
+            Assert.Equal(9, tiles.Count);
+
+            PlayInPosition(2, 2, "X");
+            PlayInPosition(1, 1, "O");
+            PlayInPosition(0, 2, "X");
+            PlayInPosition(0, 1, "O");
+            PlayInPosition(1, 0, "X");
+            
+            // Winning move
+            var tile = FindTileAtPosition(2, 1);
+            tile.Click();
+
+            var wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(3));
+            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
+            wait.Until(d => _webDriver.FindElement(By.CssSelector("#board")).Text.Equals("O"));
         }
       
 
@@ -56,14 +87,14 @@ namespace SuperNoughtsAndCrosses.Test
             _webDriver.Quit();
         }
 
-        private void PlayInPosition(int row, int col, string playerSymbol)
+        private void PlayInPosition(int row, int col, string expectedPlayerSymbol)
         {
             var tile = FindTileAtPosition(row, col);
             tile.Click();
 
             var wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(3));
             wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
-            wait.Until(d => FindTileAtPosition(row, col).Text.Contains(playerSymbol));
+            wait.Until(d => FindTileAtPosition(row, col).Text.Contains(expectedPlayerSymbol));
         }
 
         private IWebElement FindTileAtPosition(int row, int column)

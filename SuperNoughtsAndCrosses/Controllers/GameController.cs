@@ -28,7 +28,13 @@ namespace SuperNoughtsAndCrosses.Controllers
             {
             }
 
-            return PartialView("Board", _gameState);
+            if (!_gameState.IsGameOver())
+            {
+                return PartialView("Board", _gameState);
+            }
+
+            object winner = _gameState.Display(_gameState.GetWinner());
+            return PartialView("GameOverBoard", winner);
         }
     }
 }
