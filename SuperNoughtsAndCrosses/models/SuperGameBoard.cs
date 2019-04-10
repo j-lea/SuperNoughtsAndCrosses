@@ -93,5 +93,17 @@ namespace SuperNoughtsAndCrosses.models
         {
             return Board[row][col].GetWinner();
         }
+
+        public bool IsNextBoard(int row, int col)
+        {
+            if (_nextBoardPos == null) return false;
+            return _nextBoardPos.Item1 == row && _nextBoardPos.Item2 == col;
+        }
+
+        public bool GameOverOnNextBoard()
+        {
+            if (_nextBoardPos == null) return false;
+            return GameOverOnBoard(_nextBoardPos.Item1, _nextBoardPos.Item2);
+        }
     }
 }

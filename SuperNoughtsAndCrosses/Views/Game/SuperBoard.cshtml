@@ -7,7 +7,7 @@
         <div class="board-row board-row-@(row)">
             @for (var col = 0; col < Model.GetSize(); col++)
             {
-                <div class="board board-@(col)" row="@row" col="@col">
+                <div class="@GetClassName(row, col)" row="@row" col="@col">
                     @{Html.RenderPartial("Board", Model.GetBoardAtPosition(row, col));}
                 </div>
             }
@@ -26,5 +26,15 @@
         {
             <div class="game-over">Game Over. @Model.GetWinner() has won.</div>
         }
+    }
+}
+
+@{
+
+    string GetClassName(int row, int col)
+    {
+        var isValidBoard = !Model.GameOverOnBoard(row, col) && (Model.IsNextBoard(row, col) || Model.GameOverOnNextBoard());
+        var chosenBoard = isValidBoard ? "board-chosen" : "";
+        return $"board board-{col} {chosenBoard}";
     }
 }
