@@ -1,0 +1,30 @@
+@using SuperNoughtsAndCrosses.models
+@model SuperNoughtsAndCrosses.models.SuperGameBoard;
+
+<div class="super-board">
+    @for (var row = 0; row < Model.GetSize(); row++)
+    {
+        <div class="board-row board-row-@(row)">
+            @for (var col = 0; col < Model.GetSize(); col++)
+            {
+                <div class="board board-@(col)" row="@row" col="@col">
+                    @{Html.RenderPartial("Board", Model.GetBoardAtPosition(row, col));}
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@{
+    if (Model.IsGameOver())
+    {
+        if (Model.GetWinner() == Player.NONE)
+        {
+            <div class="game-over">Game Over. No one wins.</div>
+        }
+        else
+        {
+            <div class="game-over">Game Over. @Model.GetWinner() has won.</div>
+        }
+    }
+}

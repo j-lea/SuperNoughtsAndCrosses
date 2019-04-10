@@ -107,4 +107,8 @@ namespace SuperNoughtsAndCrosses.models
     {
         
     }
+
+    public class BoardCompleteException : Exception
+    {
+    }
 }

@@ -1,4 +1,4 @@
-@model SuperNoughtsAndCrosses.models.IGameState
+@model SuperNoughtsAndCrosses.models.SuperGameBoard
 
 @{
     ViewBag.Title = "Super Noughts and Crosses";
@@ -12,6 +12,4 @@
 
 <h2>Super Noughts and Crosses</h2>
 
-<div id="board">
-    @{Html.RenderPartial("Board", Model);}
-</div>
+@{Html.RenderPartial("SuperBoard", Model);}

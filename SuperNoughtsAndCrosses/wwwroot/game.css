@@ -1,3 +1,12 @@
+.board-row {
+    display: flex;
+}
+
+.board {
+    border-color: black;
+    border-style: solid;
+}
+
 .row {
     display: flex;
 }

@@ -23,18 +23,15 @@ namespace SuperNoughtsAndCrosses.models
         {
             return Board[row][col];
         }
-        
-        public void PlayFirstMove(int boardRow, int boardCol, int tileRow, int tileCol)
-        {
-            PlayTileOnBoard(boardRow, boardCol, tileRow, tileCol);
-        }
 
-        public void PlayTile(int tileRow, int tileCol)
+        public void PlayTileOnBoard(int boardRow, int boardCol, int tileRow, int tileCol)
         {
-            var boardRow = _nextBoardPos.Item1;
-            var boardCol = _nextBoardPos.Item2;
+            CheckThatBoardIsActive(boardRow, boardCol);
             
-            PlayTileOnBoard(boardRow, boardCol, tileRow, tileCol);
+            CheckThatBoardIsValid(boardRow, boardCol);
+
+            var board = GetBoardAtPosition(boardRow, boardCol);
+            board.PlayTile(tileRow, tileCol, _currentPlayer);
             
             if (GameOverOnBoard(boardRow, boardCol))
             {
@@ -44,22 +41,37 @@ namespace SuperNoughtsAndCrosses.models
                 {
                     _isGameOver = true;
                     Winner = boardWinner;
+                    return;
                 }
+            }
+            
+            _nextBoardPos = new Tuple<int, int>(tileRow, tileCol);
+            ChangeTurn();
+        }
+        
+        private void CheckThatBoardIsActive(int row, int col)
+        {
+            if (GameOverOnBoard(row, col))
+            {
+                throw new BoardCompleteException();
+            } 
+        }
+
+        private void CheckThatBoardIsValid(int row, int col)
+        {
+            if (_nextBoardPos == null) return;
+            
+            var (nextBoardRow, nextBoardCol) = _nextBoardPos;
+            var incorrectBoard = row != nextBoardRow || col != nextBoardCol;
+            if (incorrectBoard && !GameOverOnBoard(nextBoardRow, nextBoardCol))
+            {
+                throw new InvalidMoveException();
             }
         }
 
         protected override bool CheckPlayerWinsTile(GameBoard board, Player player)
         {
             return board.IsGameOver() && board.GetWinner().Equals(player);
-        }
-
-        private void PlayTileOnBoard(int boardRow, int boardCol, int tileRow, int tileCol)
-        {
-            var board = GetBoardAtPosition(boardRow, boardCol);
-            board.PlayTile(tileRow, tileCol, _currentPlayer);
-
-            _nextBoardPos = new Tuple<int, int>(tileRow, tileCol);
-            ChangeTurn();
         }
 
         public string GetSymbolForTileOnBoard(int boardRow, int boardCol, int tileRow, int tileCol)

@@ -35,7 +35,7 @@ namespace SuperNoughtsAndCrosses.Test.Unit
         [Fact]
         public void FirstMoveIsCrossOnlyOnSelectedBoard()
         {
-            _superGameBoard.PlayFirstMove(1, 0, 2, 1);
+            _superGameBoard.PlayTileOnBoard(1, 0, 2, 1);
             
             Assert.Equal("X", _superGameBoard.GetSymbolForTileOnBoard(1, 0, 2, 1));
             Assert.True(EveryBoardIsEmptyExcept(1, 0));
@@ -46,10 +46,10 @@ namespace SuperNoughtsAndCrosses.Test.Unit
         {
             var firstMoveTilePosition = (Row: 2, Col: 1);
             
-            _superGameBoard.PlayFirstMove(
+            _superGameBoard.PlayTileOnBoard(
                 1, 0, firstMoveTilePosition.Row, firstMoveTilePosition.Col);
             
-            _superGameBoard.PlayTile(0, 1);
+            _superGameBoard.PlayTileOnBoard(firstMoveTilePosition.Row, firstMoveTilePosition.Col, 0, 1);
             
             Assert.Equal("O", _superGameBoard.GetSymbolForTileOnBoard(
                 firstMoveTilePosition.Row, firstMoveTilePosition.Col, 0, 1));
@@ -58,40 +58,74 @@ namespace SuperNoughtsAndCrosses.Test.Unit
         [Fact]
         public void KnowsWhenOneBoardIsComplete()
         {
-            _superGameBoard.PlayFirstMove(0, 0, 1, 0);
-            _superGameBoard.PlayTile(0, 0);
-            _superGameBoard.PlayTile(1, 1);
-            _superGameBoard.PlayTile(0, 0);
-            _superGameBoard.PlayTile(1, 2);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 0);
+            _superGameBoard.PlayTileOnBoard(1, 0, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 1);
+            _superGameBoard.PlayTileOnBoard(1, 1, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 2);
 
             Assert.True(_superGameBoard.GameOverOnBoard(0, 0));
             Assert.Equal(Player.CROSS, _superGameBoard.GetWinnerOfBoard(0, 0));
+        }
+        
+        [Fact]
+        public void ThrowsExceptionWhenTileIsPlayedOnACompleteBoard()
+        {
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 0);
+            _superGameBoard.PlayTileOnBoard(1, 0, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 1);
+            _superGameBoard.PlayTileOnBoard(1, 1, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 2);
+            _superGameBoard.PlayTileOnBoard(1, 2, 0, 0);
+
+            Assert.Throws<BoardCompleteException>(() => _superGameBoard.PlayTileOnBoard(0, 0,2, 2));
+        }
+        
+        [Fact]
+        public void PlayerCanPlayOnAnyBoardIfDirectedToCompleteBoard()
+        {
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 0);
+            _superGameBoard.PlayTileOnBoard(1, 0, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 1);
+            _superGameBoard.PlayTileOnBoard(1, 1, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 2);
+            _superGameBoard.PlayTileOnBoard(1, 2, 0, 0);
+            
+            _superGameBoard.PlayTileOnBoard(2, 2, 2, 2);
+            Assert.Equal("X", _superGameBoard.GetSymbolForTileOnBoard(2, 2, 2, 2));
+        }
+
+        [Fact]
+        public void ThrowsExceptionWhenPlayerTriesToPlayOnBoardTheyHaveNotBeenDirectedTo()
+        {
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 0);
+            Assert.Throws<InvalidMoveException>(() => _superGameBoard.PlayTileOnBoard(0, 0, 2, 0));
         }
 
         [Fact]
         public void KnowsWhenSuperBoardIsCompleteAndCrossWins()
         {
-            _superGameBoard.PlayFirstMove(0, 0, 1, 0);
-            _superGameBoard.PlayTile(0, 0);
-            _superGameBoard.PlayTile(1, 1);
-            _superGameBoard.PlayTile(0, 0);
-            _superGameBoard.PlayTile(1, 2);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 0);
+            _superGameBoard.PlayTileOnBoard(1, 0, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 1);
+            _superGameBoard.PlayTileOnBoard(1, 1, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 2);
             Assert.Equal(Player.CROSS, _superGameBoard.GetWinnerOfBoard(0, 0));
             
-            _superGameBoard.PlayTile(0, 1);
-            _superGameBoard.PlayTile(1, 0);
-            _superGameBoard.PlayTile(0, 1);
-            _superGameBoard.PlayTile(1, 1);
-            _superGameBoard.PlayTile(0, 1);
-            _superGameBoard.PlayTile(1, 2);
+            _superGameBoard.PlayTileOnBoard(1, 2, 0, 1);
+            _superGameBoard.PlayTileOnBoard(0, 1, 1, 0);
+            _superGameBoard.PlayTileOnBoard(1, 0, 0, 1);
+            _superGameBoard.PlayTileOnBoard(0, 1, 1, 1);
+            _superGameBoard.PlayTileOnBoard(1, 1, 0, 1);
+            _superGameBoard.PlayTileOnBoard(0, 1, 1, 2);
             Assert.Equal(Player.CROSS, _superGameBoard.GetWinnerOfBoard(0, 1));
             
-            _superGameBoard.PlayTile(0, 2);
-            _superGameBoard.PlayTile(2, 0);
-            _superGameBoard.PlayTile(0, 2);
-            _superGameBoard.PlayTile(2, 1);
-            _superGameBoard.PlayTile(0, 2);
-            _superGameBoard.PlayTile(2, 2);
+            _superGameBoard.PlayTileOnBoard(1, 2, 0, 2);
+            _superGameBoard.PlayTileOnBoard(0, 2, 2, 0);
+            _superGameBoard.PlayTileOnBoard(2, 0, 0, 2);
+            _superGameBoard.PlayTileOnBoard(0, 2, 2, 1);
+            _superGameBoard.PlayTileOnBoard(2, 1, 0, 2);
+            _superGameBoard.PlayTileOnBoard(0, 2, 2, 2);
             Assert.Equal(Player.CROSS, _superGameBoard.GetWinnerOfBoard(0, 2));
             
             Assert.True(_superGameBoard.IsGameOver());
@@ -101,28 +135,28 @@ namespace SuperNoughtsAndCrosses.Test.Unit
         [Fact]
         public void KnowsWhenSuperBoardIsCompleteAndNoughtWins()
         {
-            _superGameBoard.PlayFirstMove(0, 0, 0, 0);
-            _superGameBoard.PlayTile(1, 0);
-            _superGameBoard.PlayTile(0, 0);
-            _superGameBoard.PlayTile(1, 1);
-            _superGameBoard.PlayTile(0, 0);
-            _superGameBoard.PlayTile(1, 2);
+            _superGameBoard.PlayTileOnBoard(0, 0, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 0);
+            _superGameBoard.PlayTileOnBoard(1, 0, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 1);
+            _superGameBoard.PlayTileOnBoard(1, 1, 0, 0);
+            _superGameBoard.PlayTileOnBoard(0, 0, 1, 2);
             Assert.Equal(Player.NOUGHT, _superGameBoard.GetWinnerOfBoard(0, 0));
             
-            _superGameBoard.PlayTile(0, 1);
-            _superGameBoard.PlayTile(1, 0);
-            _superGameBoard.PlayTile(0, 1);
-            _superGameBoard.PlayTile(1, 1);
-            _superGameBoard.PlayTile(0, 1);
-            _superGameBoard.PlayTile(1, 2);
+            _superGameBoard.PlayTileOnBoard(1, 2, 0, 1);
+            _superGameBoard.PlayTileOnBoard(0, 1, 1, 0);
+            _superGameBoard.PlayTileOnBoard(1, 0, 0, 1);
+            _superGameBoard.PlayTileOnBoard(0, 1, 1, 1);
+            _superGameBoard.PlayTileOnBoard(1, 1, 0, 1);
+            _superGameBoard.PlayTileOnBoard(0, 1, 1, 2);
             Assert.Equal(Player.NOUGHT, _superGameBoard.GetWinnerOfBoard(0, 1));
             
-            _superGameBoard.PlayTile(0, 2);
-            _superGameBoard.PlayTile(2, 0);
-            _superGameBoard.PlayTile(0, 2);
-            _superGameBoard.PlayTile(2, 1);
-            _superGameBoard.PlayTile(0, 2);
-            _superGameBoard.PlayTile(2, 2);
+            _superGameBoard.PlayTileOnBoard(1, 2, 0, 2);
+            _superGameBoard.PlayTileOnBoard(0, 2, 2, 0);
+            _superGameBoard.PlayTileOnBoard(2, 0, 0, 2);
+            _superGameBoard.PlayTileOnBoard(0, 2, 2, 1);
+            _superGameBoard.PlayTileOnBoard(2, 1, 0, 2);
+            _superGameBoard.PlayTileOnBoard(0, 2, 2, 2);
             Assert.Equal(Player.NOUGHT, _superGameBoard.GetWinnerOfBoard(0, 2));
             
             Assert.True(_superGameBoard.IsGameOver());

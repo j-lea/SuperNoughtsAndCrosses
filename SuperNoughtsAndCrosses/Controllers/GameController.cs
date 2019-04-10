@@ -6,35 +6,30 @@ namespace SuperNoughtsAndCrosses.Controllers
     public class GameController : Controller
     {
 
-        private readonly IGameState _gameState;
+        private readonly SuperGameBoard _gameBoard;
         
-        public GameController(IGameState gameState)
+        public GameController(SuperGameBoard gameBoard)
         {
-            _gameState = gameState;
+            _gameBoard = gameBoard;
         }
 
         public IActionResult Index()
         {
-            return View(_gameState);
+            return View(_gameBoard);
         }
 
-        public IActionResult PlayTile(int row, int column)
+        public IActionResult PlayTile(int tileRow, int tileCol, int boardRow, int boardCol)
         {
             try
             {
-                _gameState.PlayTile(row, column);
+                _gameBoard.PlayTileOnBoard(boardRow, boardCol, tileRow, tileCol);
             }
-            catch (InvalidMoveException e)
+            catch
             {
+                // ignored
             }
 
-            if (!_gameState.IsGameOver())
-            {
-                return PartialView("Board", _gameState);
-            }
-
-            object winner = _gameState.Display(_gameState.GetWinner());
-            return PartialView("GameOverBoard", winner);
+            return PartialView("SuperBoard", _gameBoard);
         }
     }
 }
