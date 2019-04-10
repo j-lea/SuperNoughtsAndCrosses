@@ -83,16 +83,6 @@ namespace SuperNoughtsAndCrosses.Test
             _webDriver.Quit();
         }
 
-        private void PlayInPosition(int row, int col, string expectedPlayerSymbol)
-        {
-            var tile = FindTileAtPosition(row, col);
-            tile.Click();
-
-            var wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(3));
-            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
-            wait.Until(d => FindTileAtPosition(row, col).Text.Contains(expectedPlayerSymbol));
-        }
-
         private void PlayInPosition(int boardRow, int boardCol, int tileRow, int tileCol, string expectedPlayerSymbol)
         {
             var tile = FindTileAtPosition(boardRow, boardCol, tileRow, tileCol);
@@ -114,12 +104,7 @@ namespace SuperNoughtsAndCrosses.Test
             Assert.True(tileAfterText.Equals(""));
 
         }
-
-        private IWebElement FindTileAtPosition(int row, int column)
-        {
-            return _webDriver.FindElement(By.CssSelector($".row-{row} > .tile-{column}"));
-        }
-
+        
         private IWebElement FindTileAtPosition(int boardRow, int boardCol, int tileRow, int tileCol)
         {
             return _webDriver.FindElement(By.CssSelector(
