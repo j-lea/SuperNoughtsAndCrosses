@@ -20,13 +20,16 @@ namespace SuperNoughtsAndCrosses.Controllers
 
         public IActionResult PlayTile(int tileRow, int tileCol, int boardRow, int boardCol)
         {
-            try
+            if (!_gameBoard.IsGameOver())
             {
-                _gameBoard.PlayTileOnBoard(boardRow, boardCol, tileRow, tileCol);
-            }
-            catch
-            {
-                // ignored
+                try
+                {
+                    _gameBoard.PlayTileOnBoard(boardRow, boardCol, tileRow, tileCol);
+                }
+                catch
+                {
+                    // ignored
+                }                
             }
 
             return PartialView("SuperBoard", _gameBoard);

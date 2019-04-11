@@ -75,6 +75,8 @@ namespace SuperNoughtsAndCrosses.Test
             gameOver = _webDriver.FindElementsByClassName("game-over");
             Assert.Equal(1, gameOver.Count);
             Assert.Contains("Game Over. CROSS has won.", gameOver.First().Text);
+            
+            FailToPlayInPosition(2, 2, 2, 2);
         }
 
         public void Dispose()
