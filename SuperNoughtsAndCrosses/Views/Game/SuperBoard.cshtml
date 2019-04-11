@@ -1,6 +1,23 @@
 @using SuperNoughtsAndCrosses.models
 @model SuperNoughtsAndCrosses.models.SuperGameBoard;
 
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io("wss://localhost:5001/ws");
+
+    socket.on('connecting', () => console.log("connecting"));
+//    socket = new WebSocket();
+    
+//    socket.onopen = () => console.log("Socket open");
+//    socket.onclose = () => console.log("Socket closed");
+//    socket.onerror = () => console.log("Socket error");
+//    socket.onmessage = (event) => {
+//        console.log(event.data);
+//        $('.super-board').load(
+//            '@Url.Action("RefreshBoard", $"Game", null)');
+//    }
+</script>
+
 <div class="super-board">
     @for (var row = 0; row < Model.GetSize(); row++)
     {

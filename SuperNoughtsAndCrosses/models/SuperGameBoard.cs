@@ -47,6 +47,8 @@ namespace SuperNoughtsAndCrosses.models
             
             _nextBoardPos = new Tuple<int, int>(tileRow, tileCol);
             ChangeTurn();
+            
+            OnTilePlayed(EventArgs.Empty);
         }
         
         private void CheckThatBoardIsActive(int row, int col)
@@ -105,5 +107,16 @@ namespace SuperNoughtsAndCrosses.models
             if (_nextBoardPos == null) return false;
             return GameOverOnBoard(_nextBoardPos.Item1, _nextBoardPos.Item2);
         }
+        
+        protected virtual void OnTilePlayed(EventArgs e)
+        {
+            EventHandler handler = TilePlayed;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler TilePlayed;
     }
 }
