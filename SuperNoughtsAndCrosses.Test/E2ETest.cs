@@ -44,6 +44,8 @@ namespace SuperNoughtsAndCrosses.Test
             Assert.Empty(gameOver);
 
             PlayInPosition(0, 0, 0, 0, "X");
+            Assert.True(BoardMarkedAsChosen(0,0));
+            Assert.Equal(1, NumberOfChosenBoards());
             
             // Tries to play in wrong board
             FailToPlayInPosition(2, 2, 1, 1);
@@ -58,6 +60,8 @@ namespace SuperNoughtsAndCrosses.Test
             WinBoardByPlayingInPosition(0, 0, 2, 2, "X");
 
             PlayInPosition(2, 2, 0, 0, "O");
+            Assert.False(BoardMarkedAsChosen(0,0));
+            Assert.Equal(8, NumberOfChosenBoards());
             
             // Can play in any board
             PlayInPosition(2, 1, 2, 2, "X");
@@ -78,6 +82,8 @@ namespace SuperNoughtsAndCrosses.Test
             PlayInPosition(1, 2, 2, 0, "O");
             WinBoardByPlayingInPosition(2, 0, 2, 2, "X");
             
+            Assert.Equal(0, NumberOfChosenBoards());
+
             gameOver = _webDriver.FindElementsByClassName("game-over");
             Assert.Equal(1, gameOver.Count);
             Assert.Contains("Game Over. CROSS has won.", gameOver.First().Text);
@@ -129,6 +135,17 @@ namespace SuperNoughtsAndCrosses.Test
         {
             return _webDriver.FindElement(By.CssSelector(
                 $".board-row-{boardRow} > .board-{boardCol} > .row-{tileRow} > .tile-{tileCol}"));
+        }
+
+        private bool BoardMarkedAsChosen(int boardRow, int boardCol)
+        {
+            return _webDriver.FindElement(By.CssSelector($".board-row-{boardRow} > .board-{boardCol}")).GetAttribute("class")
+                .Contains("board-chosen");
+        }
+
+        private int NumberOfChosenBoards()
+        {
+            return _webDriver.FindElementsByClassName("board-chosen").Count;
         }
     }
 }
