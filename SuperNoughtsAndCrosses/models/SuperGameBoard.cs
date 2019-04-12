@@ -91,6 +91,11 @@ namespace SuperNoughtsAndCrosses.models
             return Board[row][col].IsGameOver();
         }
 
+        public string GetSymbolForWinnerOnBoard(int row, int col)
+        {
+            return Display(GetWinnerOfBoard(row, col));
+        }
+
         public Player GetWinnerOfBoard(int row, int col)
         {
             return Board[row][col].GetWinner();

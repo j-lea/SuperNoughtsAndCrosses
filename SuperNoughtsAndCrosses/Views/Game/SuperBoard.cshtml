@@ -8,7 +8,14 @@
             @for (var col = 0; col < Model.GetSize(); col++)
             {
                 <div class="@GetClassName(row, col)" row="@row" col="@col">
-                    @{Html.RenderPartial("Board", Model.GetBoardAtPosition(row, col));}
+                        @if (Model.GameOverOnBoard(row, col))
+                        {
+                            <div class="board-win">@Model.GetSymbolForWinnerOnBoard(row, col)</div>
+                        }
+                        else
+                        {
+                            Html.RenderPartial("Board", Model.GetBoardAtPosition(row, col));
+                        }  
                 </div>
             }
         </div>

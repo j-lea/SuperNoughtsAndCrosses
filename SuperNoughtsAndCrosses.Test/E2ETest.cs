@@ -43,34 +43,40 @@ namespace SuperNoughtsAndCrosses.Test
             var gameOver = _webDriver.FindElementsByClassName("game-over");
             Assert.Empty(gameOver);
 
-            PlayInPosition(0, 0, 1, 0, "X");
+            PlayInPosition(0, 0, 0, 0, "X");
             
             // Tries to play in wrong board
-            FailToPlayInPosition(0, 0, 1, 1);
+            FailToPlayInPosition(2, 2, 1, 1);
             
-            PlayInPosition(1, 0, 0, 0, "O");
-            PlayInPosition(0, 0, 1, 1, "X");
+            PlayInPosition(0, 0, 1, 0, "O");
+            PlayInPosition(1, 0, 1, 1, "X");
             PlayInPosition(1, 1, 0, 0, "O");
-            PlayInPosition(0, 0, 1, 2, "X");
-            
-            PlayInPosition(1, 2, 0, 1, "O");
-            
-            // Tries to play in complete board
-            FailToPlayInPosition(0, 0, 2, 2);
-            
-            // Succeeds playing in any board
-            PlayInPosition(0, 1, 1, 0, "X");
-            PlayInPosition(1, 0, 0, 1, "O");
-            PlayInPosition(0, 1, 1, 1, "X");
-            PlayInPosition(1, 1, 0, 1, "O");
-            PlayInPosition(0, 1, 1, 2, "X");
+            PlayInPosition(0, 0, 1, 1, "X");
+            PlayInPosition(1, 1, 1, 1, "O");
+            PlayInPosition(1, 1, 0, 1, "X");
+            PlayInPosition(0, 1, 0, 0, "O");
+            WinBoardByPlayingInPosition(0, 0, 2, 2, "X");
 
-            PlayInPosition(1, 2, 0, 2, "O");
-            PlayInPosition(0, 2, 2, 0, "X");
-            PlayInPosition(2, 0, 0, 2, "O");
-            PlayInPosition(0, 2, 2, 1, "X");
-            PlayInPosition(2, 1, 0, 2, "O");
-            PlayInPosition(0, 2, 2, 2, "X");
+            PlayInPosition(2, 2, 0, 0, "O");
+            
+            // Can play in any board
+            PlayInPosition(2, 1, 2, 2, "X");
+            PlayInPosition(2, 2, 0, 1, "O");
+            PlayInPosition(0, 1, 1, 1, "X");
+            WinBoardByPlayingInPosition(1, 1, 2, 2, "O");
+
+            PlayInPosition(2, 2, 0, 2, "X");
+            PlayInPosition(0, 2, 1, 0, "O");
+            PlayInPosition(1, 0, 0, 1, "X");
+            PlayInPosition(0, 1, 1, 0, "O");
+            WinBoardByPlayingInPosition(1, 0, 2, 1, "X");
+            
+            PlayInPosition(2, 1, 2, 0, "O");
+            PlayInPosition(2, 0, 0, 2, "X");
+            PlayInPosition(0, 2, 2, 0, "O");
+            PlayInPosition(2, 0, 1, 2, "X");
+            PlayInPosition(1, 2, 2, 0, "O");
+            WinBoardByPlayingInPosition(2, 0, 2, 2, "X");
             
             gameOver = _webDriver.FindElementsByClassName("game-over");
             Assert.Equal(1, gameOver.Count);
@@ -83,6 +89,18 @@ namespace SuperNoughtsAndCrosses.Test
         {
             _host.StopAsync();
             _webDriver.Quit();
+        }
+
+        private void WinBoardByPlayingInPosition(int boardRow, int boardCol, int tileRow, int tileCol,
+            string expectedPlayerSymbol)
+        {
+            var tile = FindTileAtPosition(boardRow, boardCol, tileRow, tileCol);
+            tile.Click();
+            
+            var wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(3));
+            wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
+            wait.Until(d => 
+                _webDriver.FindElement(By.CssSelector($".board-row-{boardRow} > .board-{boardCol}")).Text.Equals(expectedPlayerSymbol));
         }
 
         private void PlayInPosition(int boardRow, int boardCol, int tileRow, int tileCol, string expectedPlayerSymbol)
