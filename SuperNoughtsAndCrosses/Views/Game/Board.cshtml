@@ -1,19 +1,5 @@
 @model SuperNoughtsAndCrosses.models.GameBoard;
 
-<script type="text/javascript">
-    var playTile = function(btn) {
-        var tileRow = btn.getAttribute("row");
-        var tileCol = btn.getAttribute("col");
-
-        var board = btn.parentElement.parentElement;
-        var boardRow = board.getAttribute("row");
-        var boardCol = board.getAttribute("col");
-        
-        $('.super-board').load(
-            '@Url.Action("PlayTile", $"Game", null)?tileRow=' + tileRow + '&tileCol=' + tileCol + '&boardRow=' + boardRow + '&boardCol=' + boardCol);
-    }
-</script>
-
 @for (var row = 0; row < Model.GetSize(); row++)
 {
     <div class="row row-@(row)">

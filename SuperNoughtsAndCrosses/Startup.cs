@@ -1,17 +1,10 @@
-﻿using System;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SuperNoughtsAndCrosses.Controllers;
+using SuperNoughtsAndCrosses.Hubs;
 using SuperNoughtsAndCrosses.models;
 
 namespace SuperNoughtsAndCrosses
@@ -34,6 +27,8 @@ namespace SuperNoughtsAndCrosses
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,22 +49,16 @@ namespace SuperNoughtsAndCrosses
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            var webSocketOptions = new WebSocketOptions()
+            app.UseSignalR(routes =>
             {
-                KeepAliveInterval = TimeSpan.FromSeconds(120),
-            };
-            app.UseWebSockets(webSocketOptions);
+                routes.MapHub<MoveHub>("/moveHub");
+            });
             
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Game}/{action=Index}/{id?}");
-                
-                routes.MapRoute(
-                    name: "ws",
-                    template: "ws",
-                    defaults: new {controller = "Game", action = "Ws"});
             });
 
             app.UseSpa(spa =>

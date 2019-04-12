@@ -8,8 +8,36 @@
     <title>Super Noughts and Crosses</title>
     <link rel="stylesheet" href="~/game.css" type="text/css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script>
+        var connection = new signalR.HubConnectionBuilder().withUrl("/moveHub").build();
+
+        connection.on("UpdateBoard",
+            () => $('.super-board').load('@Url.Action("RefreshBoard", $"Game", null)'));
+
+        connection.start().then(function() {
+            console.log("Connection started");
+        }).catch(function(err) {
+            console.error(err.toString());
+        });
+
+        var playTile = function(btn) {
+            var tileRow = btn.getAttribute("row");
+            var tileCol = btn.getAttribute("col");
+
+            var board = btn.parentElement.parentElement;
+            var boardRow = board.getAttribute("row");
+            var boardCol = board.getAttribute("col");
+
+            connection.invoke("MakeMove", tileRow, tileCol, boardRow, boardCol)
+                .catch(function(err) {
+                    console.error(err.toString());
+                });
+        }
+
+    </script>
 </head>
 
 <h2>Super Noughts and Crosses</h2>
 
-@{Html.RenderPartial("SuperBoard", Model);}
+@{ Html.RenderPartial("SuperBoard", Model); }
