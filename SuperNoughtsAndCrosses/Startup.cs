@@ -59,16 +59,11 @@ namespace SuperNoughtsAndCrosses
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Game}/{action=Index}/{id?}");
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
+                
+                routes.MapRoute(
+                    name: "home",
+                    template: "home",
+                    defaults: new {controller = "Home", action = "Index", id=""});
             });
         }
     }
