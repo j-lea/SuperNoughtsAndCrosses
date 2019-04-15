@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using SuperNoughtsAndCrosses.models;
 
@@ -6,21 +7,29 @@ namespace SuperNoughtsAndCrosses.Controllers
     public class GameController : Controller
     {
 
-        private readonly SuperGameBoard _gameBoard;
+        private readonly GameManager _gameManager;
         
-        public GameController(SuperGameBoard gameBoard)
+        public GameController(GameManager gameManager)
         {
-            _gameBoard = gameBoard;
+            _gameManager = gameManager;
+        }
+        
+        public IActionResult NewGame()
+        {
+            var game = new SuperGameBoard();
+            var id = _gameManager.Add(game);
+            return Redirect($"{id}");
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int gameId)
         {
-            return View(_gameBoard);
+            var gameBoard = _gameManager.GetGame(gameId);
+            return View(gameBoard);
         }
 
-        public IActionResult RefreshBoard()
+        public IActionResult RefreshBoard(int gameId)
         {
-            return PartialView("SuperBoard", _gameBoard);
+            return PartialView("SuperBoard", _gameManager.GetGame(gameId));
         }
 
     }

@@ -13,7 +13,7 @@ namespace SuperNoughtsAndCrosses.Test
     public class E2ETest : IDisposable
     {
         private readonly IWebHost _host;
-        private readonly ChromeDriver _webDriver;
+        private ChromeDriver _webDriver;
         
         private readonly string _baseAddress;
 
@@ -27,13 +27,28 @@ namespace SuperNoughtsAndCrosses.Test
             _host.Start();
             
             _baseAddress = _host.ServerFeatures.Get<IServerAddressesFeature>().Addresses.First();
+        }
 
-            _webDriver = new ChromeDriver {Url = _baseAddress + "/game"};
+        [Fact]
+        public void MultiUserGame()
+        {
+            _webDriver = new ChromeDriver {Url = _baseAddress + "/home"};
+
+            var newGameButton = _webDriver.FindElementsByClassName("new-game");
+            Assert.Equal(1, newGameButton.Count);
+            
+            newGameButton.First().Click();
+            
+            var wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(3));
+            wait.Until(d => _webDriver.FindElementsByClassName("super-board").Count == 1);
+            // New game link appears
         }
 
         [Fact]
         public void NineBoardGameFlow()
         {
+            _webDriver = new ChromeDriver {Url = _baseAddress + "/game"};
+
             var boards = _webDriver.FindElementsByClassName("board");
             Assert.Equal(9, boards.Count);
             

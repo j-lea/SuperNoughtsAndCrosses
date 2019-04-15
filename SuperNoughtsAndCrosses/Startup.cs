@@ -23,7 +23,7 @@ namespace SuperNoughtsAndCrosses
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<SuperGameBoard>();
+            services.AddSingleton<GameManager>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
@@ -57,8 +57,13 @@ namespace SuperNoughtsAndCrosses
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    "game",
+                    "game/{gameId}",
+                    defaults: new {controller = "Game", action = "Index", gameId=""});
+
+                routes.MapRoute(
                     name: "default",
-                    template: "{controller=Game}/{action=Index}/{id?}");
+                    template: "{controller=Game}/{action=XIndex}/{id?}");
                 
                 routes.MapRoute(
                     name: "home",

@@ -6,21 +6,23 @@ namespace SuperNoughtsAndCrosses.Hubs
 {
     public class MoveHub : Hub
     {
-        private SuperGameBoard _gameBoard;
+        private GameManager _gameManager;
         
-        public MoveHub(SuperGameBoard gameBoard)
+        public MoveHub(GameManager gameManager)
         {
-            _gameBoard = gameBoard;
+            _gameManager = gameManager;
         }
 
-        public async Task MakeMove(int tileRow, int tileCol, int boardRow, int boardCol)
+        public async Task MakeMove(int gameId, int tileRow, int tileCol, int boardRow, int boardCol)
         {
-            if (!_gameBoard.IsGameOver())
+            var game = _gameManager.GetGame(gameId);
+            if (!game.IsGameOver())
             {
                 try
                 {
-                    _gameBoard.PlayTileOnBoard(boardRow, boardCol, tileRow, tileCol);
+                    game.PlayTileOnBoard(boardRow, boardCol, tileRow, tileCol);
                     await Clients.All.SendAsync("UpdateBoard");
+                    
                 }
                 catch
                 {

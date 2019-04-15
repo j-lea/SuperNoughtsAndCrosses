@@ -11,9 +11,10 @@
     <script src="~/lib/signalr/dist/browser/signalr.js"></script>
     <script>
         var connection = new signalR.HubConnectionBuilder().withUrl("/moveHub").build();
+        var gameId = window.document.location.pathname.split('/').pop();
 
         connection.on("UpdateBoard",
-            () => $('.super-board').load('@Url.Action("RefreshBoard", $"Game", null)'));
+            () => $('.super-board').load('@Url.Action("RefreshBoard", "Game")?gameId=' + gameId));
 
         connection.start().then(function() {
             console.log("Connection started");
@@ -29,7 +30,7 @@
             var boardRow = board.getAttribute("row");
             var boardCol = board.getAttribute("col");
 
-            connection.invoke("MakeMove", tileRow, tileCol, boardRow, boardCol)
+            connection.invoke("MakeMove", gameId, tileRow, tileCol, boardRow, boardCol)
                 .catch(function(err) {
                     console.error(err.toString());
                 });
